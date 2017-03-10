@@ -1,10 +1,10 @@
-require 'datadog/statsd'
+require 'statsd'
 
 module PumaStatsLogger
   class Middleware
     def initialize(app, options = {})
       @app = app
-      @statsd = Datadog::Statsd.new('172.17.42.1', 8125)
+      @statsd = Statsd.new('172.17.42.1', 8125)
     end
 
     def call(env)
