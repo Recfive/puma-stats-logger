@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     puma-stats-logger (0.3.0)
+      dogstatsd-ruby
       json
       puma (>= 3.1.0)
 
@@ -9,8 +10,9 @@ GEM
   remote: https://rubygems.org/
   specs:
     diff-lcs (1.2.5)
-    json (1.8.3)
-    puma (3.1.0)
+    dogstatsd-ruby (2.2.0)
+    json (2.0.3)
+    puma (3.8.1)
     rack (1.5.2)
     rack-test (0.6.2)
       rack (>= 1.0)
@@ -34,4 +36,4 @@ DEPENDENCIES
   rspec
 
 BUNDLED WITH
-   1.11.2
+   1.13.7

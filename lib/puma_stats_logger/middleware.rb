@@ -1,8 +1,10 @@
+require 'datadog/statsd'
+
 module PumaStatsLogger
   class Middleware
     def initialize(app, options = {})
       @app = app
-      @logger = options[:logger] || Logger.new($stdout)
+      @statsd = Datadog::Statsd.new('172.17.42.1', 8125)
     end
 
     def call(env)
@@ -31,12 +33,14 @@ module PumaStatsLogger
       end
 
       stats = JSON.parse(stats.split("\r\n").last)
-      line = String.new.tap do |s|
-        s << "source=#{ENV['DYNO']} " if ENV['DYNO']
-        s << stats.map{|k,v| "measure#puma.#{k}=#{v}"}.join(' ')
-      end
 
-      @logger.info line
+      prefix = "puma.threads."
+
+      @statsd.batch do |s|
+        stats.each do |k,v|
+          s.histogram(prefix + k, v, tags: ["service:#{ENV['SERVICE_NAME']}"])
+        end
+      end
     end
   end
 end
