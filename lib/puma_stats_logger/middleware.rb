@@ -4,6 +4,7 @@ module PumaStatsLogger
   class Middleware
     def initialize(app, options = {})
       @app = app
+      @container_id = `hostname`.chomp
       @statsd = Statsd.new('172.17.42.1', 8125)
     end
 
@@ -38,7 +39,7 @@ module PumaStatsLogger
 
       @statsd.batch do |s|
         stats.each do |k,v|
-          s.histogram(prefix + k, v, tags: ["service:#{ENV['SERVICE_NAME']}"])
+          s.histogram(prefix + k, v, tags: ["service:#{ENV['SERVICE_NAME']}", "container:#{@container_id}"])
         end
       end
     end
